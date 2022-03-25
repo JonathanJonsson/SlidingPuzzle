@@ -5,14 +5,23 @@ public class Pathfinder
 	private State finalState;
 	public Queue<State> stateQueue = new();
 
-	public State CalculateRoute()
+	public State CalculateRoute(State startState)
 	{
-		var currentState = stateQueue.Dequeue();
-
+		stateQueue.Enqueue(startState);
 		while (stateQueue.Count > 0)
 		{
+			var currentState = stateQueue.Dequeue();
+
+
+			if (currentState.IsEndNode())
+			{
+				finalState = currentState;
+
+				break;
+			}
 			foreach (var neighbour in currentState.GetNeighbour())
 			{
+				neighbour.PrintCurrentState();
 				if (currentState.IsEndNode())
 				{
 					finalState = currentState;

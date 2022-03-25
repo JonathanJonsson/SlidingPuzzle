@@ -1,12 +1,7 @@
-﻿using System.Windows.Input;
-namespace SlidingPuzzle;
+﻿namespace SlidingPuzzle;
 
 public class State //Node!
 {
-	public Cell[] Grid = new Cell[9];
-	public int GridWidth = 3;
-	public List<State> predecessors = new List<State>();
-
 	private readonly List<int> numberPool = new()
 	{
 		1,
@@ -32,7 +27,11 @@ public class State //Node!
 		6,
 		-1
 	};
-	
+
+	public Cell[] Grid = new Cell[9];
+	public int GridWidth = 3;
+	public List<State> predecessors = new();
+
 	public State()
 	{
 		var x = 1;
@@ -54,11 +53,13 @@ public class State //Node!
 		return Grid[x + y*GridWidth];
 	}
 
-	
+	public Cell GetCellValue(int index)
+	{
+		return Grid[index];
+	}
 	public int GetIndexOfCell(int value)
 	{
- 
-		for (int i = 0; i < Grid.Length; i++)
+		for (var i = 0; i < Grid.Length; i++)
 		{
 			if (value == Grid[i].currentCellNumber)
 			{
@@ -121,7 +122,7 @@ public class State //Node!
 
 	public bool IsEndNode()
 	{
-		foreach (var cell in Grid)
+		foreach (var cell in this.Grid)
 		{
 			if (cell.currentCellNumber != cell.targetCellNumber)
 			{
@@ -132,6 +133,99 @@ public class State //Node!
 		return true;
 	}
 
+	// public void GetNeighbour()
+	public IEnumerable<State> GetNeighbour()
+	{
+		var slotPosition = GetIndexOfCell(-1);
+		var checkUp = slotPosition - GridWidth;
+		var checkDown = slotPosition + GridWidth;
+		var checkRight = slotPosition + 1;
+		var checkLeft = slotPosition - 1;
+
+		if (predecessors.Contains(this))
+		{
+			yield break;
+		}
+		
+		if (LegalBoardPosition(checkUp)) // inside board
+		{
+			var newState = new State
+			{
+				Grid = Grid,
+				GridWidth = GridWidth
+			};
+			SwapElements(newState, checkUp);
+
+			yield return newState;
+		}
+
+		if (LegalBoardPosition(checkDown)) // inside board
+		{
+			var newState = new State
+			{
+				Grid = Grid,
+				GridWidth = GridWidth
+			};
+			SwapElements(newState, checkDown);
+
+			yield return newState;
+		}
+
+		if (LegalBoardPosition(checkLeft)) // inside board
+		{
+			var newState = new State
+			{
+				Grid = Grid,
+				GridWidth = GridWidth
+			};
+			SwapElements(newState, checkLeft);
+
+			yield return newState;
+		}
+
+		if (LegalBoardPosition(checkRight)) // inside board
+		{
+			var newState = new State
+			{
+				Grid = Grid,
+				GridWidth = GridWidth
+			};
+			SwapElements(newState, checkRight);
+
+			yield return newState;
+		}
+	}
+
+	private void SwapElements(State newState, int checkDir)
+	{
+		var temp = newState.Grid[checkDir].currentCellNumber;
+		Grid[GetIndexOfCell(-1)].currentCellNumber = temp;
+		Grid[checkDir].currentCellNumber = -1;
+	}
+
+	public bool LegalBoardPosition(int pos)
+	{
+		if (pos >= 0 && pos < Grid.Length - 1)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public List<State> ReturnPath()
+	{
+		var path = new List<State>();
+
+		foreach (var state in predecessors)
+		{
+			path.Add(state);
+		}
+
+		path.Add(this);
+
+		return path;
+	}
 
 	#region TempSave
 	// var currentHole = GetIndexOfCell(-1);
@@ -149,42 +243,4 @@ public class State //Node!
 	// 			
 	// }
 	#endregion
-		
-	// public void GetNeighbour()
-	public IEnumerable<State> GetNeighbour()
-	{
-		  
-			yield return new State()
-			{
-				Grid =  this.Grid,
-				GridWidth = this.GridWidth,
-				//Do the swap between -1 and other direction
-				
-				
-			};
-			
-			
-		
-		
-
-
-
-
-	}
-
-	public List<State> ReturnPath()
-	{
-		var path = new List<State>();
-
-		foreach (var state in predecessors)
-		{
-			path.Add(state);
-		}
-		
-		path.Add(this);
-
-		return path;
-
-
-	}
 }
