@@ -1,14 +1,21 @@
 ﻿
 using SlidingPuzzle;
 
-State state = new();
+State startState = new();
 
-Console.WriteLine(state.GetCell(1,0).targetCellNumber);
+ startState.PrintTargetState();
+startState.PrintCurrentState();
+Pathfinder pathfinder = new Pathfinder();
 
- state.PrintTargetState();
-Console.WriteLine();
-state.PrintCurrentState();
+var finalState = pathfinder.CalculateRoute();
 
-state.GetNeighbour();
+finalState.PrintCurrentState();
 
- 
+var path = finalState.ReturnPath();
+
+foreach (var state in path)
+{
+ Console.WriteLine(state);
+}
+
+

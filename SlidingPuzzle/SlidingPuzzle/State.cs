@@ -1,10 +1,11 @@
 ﻿using System.Windows.Input;
 namespace SlidingPuzzle;
 
-public class State //Node basically!
+public class State //Node!
 {
 	public Cell[] Grid = new Cell[9];
 	public int GridWidth = 3;
+	public List<State> predecessors = new List<State>();
 
 	private readonly List<int> numberPool = new()
 	{
@@ -19,6 +20,19 @@ public class State //Node basically!
 		-1
 	};
 
+	private readonly List<int> staticStartSetup = new()
+	{
+		7,
+		2,
+		4,
+		5,
+		8,
+		3,
+		1,
+		6,
+		-1
+	};
+	
 	public State()
 	{
 		var x = 1;
@@ -29,19 +43,35 @@ public class State //Node basically!
 			Grid[i] = new Cell
 			{
 				targetCellNumber = x,
-				currentCellNumber = shuffledNumbers[i]
+				currentCellNumber = staticStartSetup[i] //TODO: Change to shuffled here
 			};
 			x++;
 		}
 	}
 
-	public Cell GetCell(int x, int y)
+	public Cell GetCellValue(int x, int y)
 	{
 		return Grid[x + y*GridWidth];
 	}
 
+	
+	public int GetIndexOfCell(int value)
+	{
+ 
+		for (int i = 0; i < Grid.Length; i++)
+		{
+			if (value == Grid[i].currentCellNumber)
+			{
+				return i;
+			}
+		}
+
+		return 0;
+	}
+
 	public void PrintCurrentState()
 	{
+		Console.WriteLine();
 		int x = 0, y = 0;
 		Console.WriteLine();
 		Console.WriteLine("Current state (-1 = empty slot): ");
@@ -57,7 +87,7 @@ public class State //Node basically!
 				Console.WriteLine();
 			}
 
-			Console.Write(GetCell(x, y).currentCellNumber + " | ");
+			Console.Write(GetCellValue(x, y).currentCellNumber + " | ");
 			x++;
 		}
 	}
@@ -84,12 +114,12 @@ public class State //Node basically!
 				Console.WriteLine();
 			}
 
-			Console.Write(GetCell(x, y).targetCellNumber + " | ");
+			Console.Write(GetCellValue(x, y).targetCellNumber + " | ");
 			x++;
 		}
 	}
 
-	public bool CheckWinState()
+	public bool IsEndNode()
 	{
 		foreach (var cell in Grid)
 		{
@@ -102,37 +132,59 @@ public class State //Node basically!
 		return true;
 	}
 
-	public void GetNeighbour()
-	// public IEnumerable<State> GetNeighbour()
+
+	#region TempSave
+	// var currentHole = GetIndexOfCell(-1);
+	// //check if up is allowed
+	// var checkPos = currentHole - GridWidth;
+	//
+	// 	if (checkPos < 0)
+	// {
+	// 	Console.WriteLine("ERROR: OUTSIDE ARRAY");
+	//
+	// 	return;
+	// }else
+	// {
+	// 	Console.WriteLine("Below: " +Grid[checkPos].currentCellNumber);
+	// 			
+	// }
+	#endregion
+		
+	// public void GetNeighbour()
+	public IEnumerable<State> GetNeighbour()
 	{
-		var allowed = false;
-		var inputKey = new ConsoleKey();
-		
-		while (!allowed)
-		{
-			Console.WriteLine("Use arrows to reach targetState by moving to -1 (representing the empty block)");
-			inputKey = Console.ReadKey().Key;
-			if (inputKey == ConsoleKey.UpArrow || inputKey == ConsoleKey.DownArrow || inputKey == ConsoleKey.LeftArrow || inputKey == ConsoleKey.RightArrow)
-				allowed = true;
-		}
-		
-		if (inputKey == ConsoleKey.UpArrow)
-		{
+		  
+			yield return new State()
+			{
+				Grid =  this.Grid,
+				GridWidth = this.GridWidth,
+				//Do the swap between -1 and other direction
+				
+				
+			};
 			
-		}
-		if (inputKey == ConsoleKey.DownArrow)
-		{
 			
-		}
-		if (inputKey == ConsoleKey.LeftArrow)
-		{
-			
-		}
-		if (inputKey == ConsoleKey.RightArrow)
-		{
-			
-		}
 		
 		
+
+
+
+
+	}
+
+	public List<State> ReturnPath()
+	{
+		var path = new List<State>();
+
+		foreach (var state in predecessors)
+		{
+			path.Add(state);
+		}
+		
+		path.Add(this);
+
+		return path;
+
+
 	}
 }
