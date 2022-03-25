@@ -5,6 +5,8 @@ State startState = new();
 
  startState.PrintTargetState();
 startState.PrintCurrentState();
+Console.WriteLine();
+Console.WriteLine("-------------------------------------------------------");
 var pathfinder = new Pathfinder();
 
 var finalState = pathfinder.CalculateRoute(startState);

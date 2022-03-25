@@ -22,13 +22,7 @@ public class Pathfinder
 			foreach (var neighbour in currentState.GetNeighbour())
 			{
 				neighbour.PrintCurrentState();
-				if (currentState.IsEndNode())
-				{
-					finalState = currentState;
-
-					break;
-				}
-
+				
 				if (currentState.predecessors.Contains(neighbour))
 				{
 					continue;

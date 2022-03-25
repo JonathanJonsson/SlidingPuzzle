@@ -42,13 +42,13 @@ public class State //Node!
 			Grid[i] = new Cell
 			{
 				targetCellNumber = x,
-				currentCellNumber = staticStartSetup[i] //TODO: Change to shuffled here
+				currentCellNumber = staticStartSetup[i] //TODO: Change to shuffled here after getting scripts to work
 			};
 			x++;
 		}
 	}
 
-	public Cell GetCellValue(int x, int y)
+	private Cell GetCellValue(int x, int y)
 	{
 		return Grid[x + y*GridWidth];
 	}
@@ -57,7 +57,8 @@ public class State //Node!
 	{
 		return Grid[index];
 	}
-	public int GetIndexOfCell(int value)
+
+	private int GetIndexOfCell(int value)
 	{
 		for (var i = 0; i < Grid.Length; i++)
 		{
@@ -133,77 +134,79 @@ public class State //Node!
 		return true;
 	}
 
-	// public void GetNeighbour()
 	public IEnumerable<State> GetNeighbour()
 	{
-		var slotPosition = GetIndexOfCell(-1);
-		var checkUp = slotPosition - GridWidth;
-		var checkDown = slotPosition + GridWidth;
-		var checkRight = slotPosition + 1;
-		var checkLeft = slotPosition - 1;
+		//get cardinal directions in relation to empty slot (=-1)
+		var emptySlotPosition = GetIndexOfCell(-1);
+		var slotAboveIndex = emptySlotPosition - GridWidth;
+		var slotBelowIndex = emptySlotPosition + GridWidth;
+		var slotRightIndex = emptySlotPosition + 1;
+		var slotLeftIndex = emptySlotPosition - 1;
 
-		if (predecessors.Contains(this))
+		
+		if (predecessors.Contains(this)) // Do not check previous same game boards - wrong here right now I think
 		{
 			yield break;
 		}
 		
-		if (LegalBoardPosition(checkUp)) // inside board
+		if (LegalBoardPosition(slotAboveIndex)) // inside board
 		{
 			var newState = new State
 			{
 				Grid = Grid,
 				GridWidth = GridWidth
 			};
-			SwapElements(newState, checkUp);
+			SwapElementsInState(newState, slotAboveIndex, emptySlotPosition);
 
 			yield return newState;
 		}
 
-		if (LegalBoardPosition(checkDown)) // inside board
+		if (LegalBoardPosition(slotBelowIndex)) // inside board
 		{
 			var newState = new State
 			{
 				Grid = Grid,
-				GridWidth = GridWidth
+				GridWidth = GridWidth,
 			};
-			SwapElements(newState, checkDown);
+			SwapElementsInState(newState, slotBelowIndex,emptySlotPosition);
 
 			yield return newState;
 		}
 
-		if (LegalBoardPosition(checkLeft)) // inside board
+		if (LegalBoardPosition(slotLeftIndex)) // inside board
 		{
 			var newState = new State
 			{
 				Grid = Grid,
 				GridWidth = GridWidth
 			};
-			SwapElements(newState, checkLeft);
+			SwapElementsInState(newState, slotLeftIndex,emptySlotPosition);
 
 			yield return newState;
 		}
 
-		if (LegalBoardPosition(checkRight)) // inside board
+		if (LegalBoardPosition(slotRightIndex)) // inside board
 		{
 			var newState = new State
 			{
 				Grid = Grid,
 				GridWidth = GridWidth
 			};
-			SwapElements(newState, checkRight);
+			SwapElementsInState(newState, slotRightIndex,emptySlotPosition);
 
 			yield return newState;
 		}
 	}
 
-	private void SwapElements(State newState, int checkDir)
+	private void SwapElementsInState(State newState, int checkDir, int originalEmptyPos)
 	{
 		var temp = newState.Grid[checkDir].currentCellNumber;
-		Grid[GetIndexOfCell(-1)].currentCellNumber = temp;
-		Grid[checkDir].currentCellNumber = -1;
+		newState.Grid[checkDir].currentCellNumber = newState.Grid[originalEmptyPos].currentCellNumber;
+		newState.Grid[originalEmptyPos].currentCellNumber = temp;
+
 	}
 
-	public bool LegalBoardPosition(int pos)
+	private bool LegalBoardPosition(int pos)
 	{
 		if (pos >= 0 && pos < Grid.Length - 1)
 		{
@@ -226,21 +229,5 @@ public class State //Node!
 
 		return path;
 	}
-
-	#region TempSave
-	// var currentHole = GetIndexOfCell(-1);
-	// //check if up is allowed
-	// var checkPos = currentHole - GridWidth;
-	//
-	// 	if (checkPos < 0)
-	// {
-	// 	Console.WriteLine("ERROR: OUTSIDE ARRAY");
-	//
-	// 	return;
-	// }else
-	// {
-	// 	Console.WriteLine("Below: " +Grid[checkPos].currentCellNumber);
-	// 			
-	// }
-	#endregion
+ 
 }
