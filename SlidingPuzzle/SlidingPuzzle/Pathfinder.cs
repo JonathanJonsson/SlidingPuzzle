@@ -3,8 +3,7 @@
 public class Pathfinder
 {
 	private State finalState;
-	public Queue<State> stateQueue = new();
-
+	private Queue<State> stateQueue = new();
 	public State CalculateRoute(State startState)
 	{
 		stateQueue.Enqueue(startState);
@@ -16,20 +15,16 @@ public class Pathfinder
 			if (currentState.IsEndNode())
 			{
 				finalState = currentState;
-
 				break;
 			}
+			
 			foreach (var neighbour in currentState.GetNeighbour())
 			{
 				neighbour.PrintCurrentState();
-				
-				if (currentState.predecessors.Contains(neighbour))
-				{
-					continue;
-				}
-				
+
 				neighbour.predecessors.Add(currentState);
 				stateQueue.Enqueue(neighbour);
+
 			}
 		}
 

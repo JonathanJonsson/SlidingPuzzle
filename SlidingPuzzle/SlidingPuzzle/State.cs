@@ -15,17 +15,17 @@ public class State //Node!
 		-1
 	};
 
-	private readonly List<int> staticStartSetup = new()
+	private readonly List<int> fixedStartSetup = new()
 	{
 		7,
 		2,
 		4,
 		5,
-		8,
+		-1,
 		3,
 		1,
 		6,
-		-1
+		8
 	};
 
 	public Cell[] Grid = new Cell[9];
@@ -42,9 +42,22 @@ public class State //Node!
 			Grid[i] = new Cell
 			{
 				targetCellNumber = x,
-				currentCellNumber = staticStartSetup[i] //TODO: Change to shuffled here after getting scripts to work
+				currentCellNumber = fixedStartSetup[i] //TODO: Change to shuffled here after getting scripts to work
 			};
 			x++;
+		}
+	}
+
+	private bool IsIllegalState
+	{
+		get
+		{
+			if (predecessors.Contains(this))
+			{
+				return true;
+			}
+			
+			return false;
 		}
 	}
 
@@ -53,7 +66,7 @@ public class State //Node!
 		return Grid[x + y*GridWidth];
 	}
 
-	public Cell GetCellValue(int index)
+	private Cell GetCellValue(int index)
 	{
 		return Grid[index];
 	}
@@ -68,7 +81,7 @@ public class State //Node!
 			}
 		}
 
-		return 0;
+		return default;
 	}
 
 	public void PrintCurrentState()
@@ -123,7 +136,7 @@ public class State //Node!
 
 	public bool IsEndNode()
 	{
-		foreach (var cell in this.Grid)
+		foreach (var cell in Grid)
 		{
 			if (cell.currentCellNumber != cell.targetCellNumber)
 			{
@@ -142,78 +155,88 @@ public class State //Node!
 		var slotBelowIndex = emptySlotPosition + GridWidth;
 		var slotRightIndex = emptySlotPosition + 1;
 		var slotLeftIndex = emptySlotPosition - 1;
-
 		
-		if (predecessors.Contains(this)) // Do not check previous same game boards - wrong here right now I think
+		var newState = new State
+		{
+			Grid = Grid,
+			GridWidth = GridWidth,
+			predecessors = predecessors.Concat
+			(
+				new[]
+				{
+					this
+				}
+			).ToList()
+		};
+
+		if (newState.IsIllegalState)
 		{
 			yield break;
 		}
-		
+
 		if (LegalBoardPosition(slotAboveIndex)) // inside board
 		{
-			var newState = new State
-			{
-				Grid = Grid,
-				GridWidth = GridWidth
-			};
-			SwapElementsInState(newState, slotAboveIndex, emptySlotPosition);
+			// if (GetCellValue(emptySlotPosition).currentCellNumber == -1)
+			// {
+				SwapElementsInState(newState, slotAboveIndex, emptySlotPosition);
+				
+				yield return newState;
+			// }
 
-			yield return newState;
 		}
 
 		if (LegalBoardPosition(slotBelowIndex)) // inside board
 		{
-			var newState = new State
-			{
-				Grid = Grid,
-				GridWidth = GridWidth,
-			};
-			SwapElementsInState(newState, slotBelowIndex,emptySlotPosition);
 
-			yield return newState;
+			// if (GetCellValue(emptySlotPosition).currentCellNumber == -1)
+			// {
+				SwapElementsInState(newState, slotBelowIndex, emptySlotPosition);
+
+				yield return newState;
+			// }
+
 		}
 
 		if (LegalBoardPosition(slotLeftIndex)) // inside board
 		{
-			var newState = new State
-			{
-				Grid = Grid,
-				GridWidth = GridWidth
-			};
-			SwapElementsInState(newState, slotLeftIndex,emptySlotPosition);
+			// var newState = new State
+			// {
+			// 	Grid = Grid,
+			// 	GridWidth = GridWidth
+			// };
+			// if (GetCellValue(emptySlotPosition).currentCellNumber == -1)
+			// {
+				SwapElementsInState(newState, slotLeftIndex, emptySlotPosition);
 
-			yield return newState;
+				yield return newState;
+			// }
 		}
 
 		if (LegalBoardPosition(slotRightIndex)) // inside board
 		{
-			var newState = new State
-			{
-				Grid = Grid,
-				GridWidth = GridWidth
-			};
-			SwapElementsInState(newState, slotRightIndex,emptySlotPosition);
+			// var newState = new State
+			// {
+			// 	Grid = Grid,
+			// 	GridWidth = GridWidth
+			// };
 
-			yield return newState;
+			// if (GetCellValue(emptySlotPosition).currentCellNumber == -1)
+			// {
+				SwapElementsInState(newState, slotRightIndex, emptySlotPosition);
+
+				yield return newState;
+			// }
 		}
 	}
 
 	private void SwapElementsInState(State newState, int checkDir, int originalEmptyPos)
 	{
-		var temp = newState.Grid[checkDir].currentCellNumber;
-		newState.Grid[checkDir].currentCellNumber = newState.Grid[originalEmptyPos].currentCellNumber;
-		newState.Grid[originalEmptyPos].currentCellNumber = temp;
-
+		(newState.Grid[checkDir].currentCellNumber, newState.Grid[originalEmptyPos].currentCellNumber) = (newState.Grid[originalEmptyPos].currentCellNumber, newState.Grid[checkDir].currentCellNumber);
 	}
 
 	private bool LegalBoardPosition(int pos)
 	{
-		if (pos >= 0 && pos < Grid.Length - 1)
-		{
-			return true;
-		}
-
-		return false;
+		return pos >= 0 && pos < Grid.Length - 1;
 	}
 
 	public List<State> ReturnPath()
@@ -229,5 +252,4 @@ public class State //Node!
 
 		return path;
 	}
- 
 }
