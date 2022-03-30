@@ -4,6 +4,7 @@ public class Pathfinder
 {
 	private State finalState;
 	private Queue<State> stateQueue = new();
+	private List<State> visitedStates = new List<State>();
 	public State CalculateRoute(State startState)
 	{
 		stateQueue.Enqueue(startState);
@@ -15,17 +16,23 @@ public class Pathfinder
 			if (currentState.IsEndNode())
 			{
 				finalState = currentState;
+				Console.WriteLine("Found final state: ");
+				finalState.PrintCurrentState();
 				break;
 			}
 			
-			foreach (var neighbour in currentState.GetNeighbour())
-			{
-				neighbour.PrintCurrentState();
-
-				neighbour.predecessors.Add(currentState);
-				stateQueue.Enqueue(neighbour);
-
-			}
+			// foreach (var neighbour in currentState.GetNeighbour())
+			// {
+			// 	neighbour.PrintCurrentState();
+			// 	if (visitedStates.Contains(neighbour))
+			// 	{
+			// 		continue;
+			// 	}
+			// 	
+			// 	visitedStates.Add(neighbour);
+			// 	stateQueue.Enqueue(neighbour);
+			//
+			// }
 		}
 
 		return finalState;
