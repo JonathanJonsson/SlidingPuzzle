@@ -23,16 +23,15 @@ public class State //Node!
 		2,
 		4,
 		5,
-		-1,
+		8,
 		3,
 		1,
 		6,
-		8
+		-1
 	};
 
 	private Cell[,] grid = new Cell[3,3];
 	private int gridWidth = 3;
-	private Vector2 cellPos = default; 
  
 	public State PreviousState;
  
@@ -41,7 +40,6 @@ public class State //Node!
 		var targetNumber = 1;
 		var i = 0;
 		var shuffledNumbers = numberPool.OrderBy(a => Guid.NewGuid()).ToList();
-		Console.WriteLine(grid.Rank);
 		for (int x = 0; x <= grid.Rank; x++)
 		{
 			for (int y = 0; y <= grid.Rank; y++)
@@ -134,100 +132,101 @@ public class State //Node!
 		return true;
 	}
 
-	// public IEnumerable<State> GetNeighbour()
-	// {
-	// 	//get cardinal directions in relation to empty slot (=-1)
-	// 	////TODO: Need x & y --> int vector
-	// 	var emptySlotPosition = GetIndexOfCell(-1);
-	// 	var slotAboveIndex = new Vector2(emptySlotPosition.X, emptySlotPosition.Y + 1);
-	// 	var slotBelowIndex = new Vector2(emptySlotPosition.X, emptySlotPosition.Y -1);
-	// 	var slotRightIndex = new Vector2(emptySlotPosition.X+1, emptySlotPosition.Y);
-	// 	var slotLeftIndex = new Vector2(emptySlotPosition.X-1, emptySlotPosition.Y);;
-	// 	
-	// 	
-	// 	
- //
-	// 	if (LegalBoardPosition(slotAboveIndex)) // inside board
-	// 	{
-	// 		
-	// 		var newState = new State //TODO: in each statement below.
-	// 		{
-	// 			grid = grid,
-	// 			gridWidth = gridWidth,
-	// 			PreviousState = this,
-	// 		};
-	// 		
-	// 			// SwapElementsInState(newState, slotAboveIndex, emptySlotPosition);
-	// 			
-	// 			yield return newState;
-	// 		
-	//
-	// 	}
-	//
-	// 	if (LegalBoardPosition(slotBelowIndex)) // inside board
-	// 	{
-	// 		var newState = new State //TODO: in each statement below.
-	// 		{
-	// 			grid = grid,
-	// 			gridWidth = gridWidth,
-	// 			PreviousState = this
-	// 		};
-	//
- //
-	// 			// SwapElementsInState(newState, slotBelowIndex, emptySlotPosition);
-	//
-	// 			yield return newState;
-	// 		
-	//
-	// 	}
-	//
-	// 	if (LegalBoardPosition(slotLeftIndex)) // inside board
-	// 	{
-	// 		var newState = new State //TODO: in each statement below.
-	// 		{
-	// 			grid = grid,
-	// 			gridWidth = gridWidth,
-	// 			PreviousState = this
-	// 		};
-	//
-	//
-	// 			// SwapElementsInState(newState, slotLeftIndex, emptySlotPosition);
-	//
-	// 			yield return newState;
-	// 		
-	// 	}
-	//
-	// 	if (LegalBoardPosition(slotRightIndex)) // inside board
-	// 	{
-	// 		var newState = new State //TODO: in each statement below.
-	// 		{
-	// 			grid = grid,
-	// 			gridWidth = gridWidth,
-	// 			PreviousState = this
-	// 		};
-	//
-	// 			// SwapElementsInState(newState, slotRightIndex, emptySlotPosition);
-	//
-	// 			yield return newState;
-	// 		
-	// 	}
-	// }
+	public IEnumerable<State> GetNeighbour()
+	{
+		//get cardinal directions in relation to empty slot (=-1)
+		var emptySlotPosition = GetIndexOfCell(-1);
+		var slotAboveIndex = new Vector2(emptySlotPosition.X, emptySlotPosition.Y + 1);
+		var slotBelowIndex = new Vector2(emptySlotPosition.X, emptySlotPosition.Y -1);
+		var slotRightIndex = new Vector2(emptySlotPosition.X+1, emptySlotPosition.Y);
+		var slotLeftIndex = new Vector2(emptySlotPosition.X-1, emptySlotPosition.Y);;
+		
+		
+		
+ 
+		if (LegalBoardPosition(slotAboveIndex)) // inside board
+		{
+			
+			var newState = new State //TODO: in each statement below.
+			{
+				grid = grid,
+				gridWidth = gridWidth,
+				PreviousState = this,
+			};
+			
+				SwapElementsInState(newState, slotAboveIndex, emptySlotPosition);
+				
+				yield return newState;
+			
+	
+		}
+	
+		if (LegalBoardPosition(slotBelowIndex)) // inside board
+		{
+			var newState = new State //TODO: in each statement below.
+			{
+				grid = grid,
+				gridWidth = gridWidth,
+				PreviousState = this
+			};
+	
+ 
+				SwapElementsInState(newState, slotBelowIndex, emptySlotPosition);
+	
+				yield return newState;
+			
+	
+		}
+	
+		if (LegalBoardPosition(slotLeftIndex)) // inside board
+		{
+			var newState = new State //TODO: in each statement below.
+			{
+				grid = grid,
+				gridWidth = gridWidth,
+				PreviousState = this
+			};
+	
+	
+				SwapElementsInState(newState, slotLeftIndex, emptySlotPosition);
+	
+				yield return newState;
+			
+		}
+	
+		if (LegalBoardPosition(slotRightIndex)) // inside board
+		{
+			var newState = new State //TODO: in each statement below.
+			{
+				grid = grid,
+				gridWidth = gridWidth,
+				PreviousState = this
+			};
+	
+				SwapElementsInState(newState, slotRightIndex, emptySlotPosition);
+	
+				yield return newState;
+			
+		}
+	}
 
 	private void SwapElementsInState(State newState, Vector2 checkDir, Vector2 originalEmptyPos)
 	{
-		// (newState.grid[checkDir].currentCellNumber, newState.grid[originalEmptyPos].currentCellNumber) = (newState.grid[originalEmptyPos].currentCellNumber, newState.grid[checkDir].currentCellNumber);
-		
-		
-		
+		var temp = newState.grid[(int)checkDir.X, (int)checkDir.Y];
+		newState.grid[(int) checkDir.X, (int) checkDir.Y] = newState.grid[(int) originalEmptyPos.X, (int) originalEmptyPos.Y];
+		newState.grid[(int) originalEmptyPos.X, (int) originalEmptyPos.Y] = temp;
+
+
 	}
 
-	// private bool LegalBoardPosition(Vector2 pos)
-	// {
-	// 	if (x + y*gridWidth > grid.Length && x + y*gridWidth < 0)
-	// 	{
-	// 		return false;
-	// 	}
-	// 	return true;
-	// }
+	private bool LegalBoardPosition(Vector2 pos)
+	{
+		if (pos.X > grid.Rank || pos.X<0 || pos.Y> grid.Rank || pos.Y<0)
+		{
+			return false;
+		}
+		
+		return true;
+	}
  
 }

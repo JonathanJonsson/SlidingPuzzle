@@ -7,9 +7,9 @@ State startState = new();
 startState.PrintCurrentState();
 Console.WriteLine();
 Console.WriteLine("-------------------------------------------------------");
-// var pathfinder = new Pathfinder();
+var pathfinder = new Pathfinder();
 //
-// var finalState = pathfinder.CalculateRoute(startState);
+var finalState = pathfinder.CalculateRoute(startState);
 //
 // finalState.PrintCurrentState();
 

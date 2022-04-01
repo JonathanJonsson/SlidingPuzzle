@@ -21,18 +21,18 @@ public class Pathfinder
 				break;
 			}
 			
-			// foreach (var neighbour in currentState.GetNeighbour())
-			// {
-			// 	neighbour.PrintCurrentState();
-			// 	if (visitedStates.Contains(neighbour))
-			// 	{
-			// 		continue;
-			// 	}
-			// 	
-			// 	visitedStates.Add(neighbour);
-			// 	stateQueue.Enqueue(neighbour);
-			//
-			// }
+			foreach (var neighbour in currentState.GetNeighbour())
+			{
+				neighbour.PrintCurrentState();
+				if (visitedStates.Contains(neighbour))
+				{
+					continue;
+				}
+				
+				visitedStates.Add(neighbour);
+				stateQueue.Enqueue(neighbour);
+			
+			}
 		}
 
 		return finalState;
