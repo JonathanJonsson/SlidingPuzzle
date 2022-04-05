@@ -4,7 +4,7 @@ using SlidingPuzzle;
 State startState = new();
 
  startState.PrintTargetState();
-startState.PrintCurrentState();
+startState.PrintState();
 Console.WriteLine();
 Console.WriteLine("-------------------------------------------------------");
 var pathfinder = new Pathfinder();

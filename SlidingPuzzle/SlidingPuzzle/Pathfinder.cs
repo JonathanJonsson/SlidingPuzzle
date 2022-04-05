@@ -2,9 +2,9 @@
 
 public class Pathfinder
 {
-	private State finalState;
+	private State finalState = new();
 	private Queue<State> stateQueue = new();
-	private List<State> visitedStates = new List<State>();
+	private HashSet<State> visitedStates = new HashSet<State>();
 	public State CalculateRoute(State startState)
 	{
 		stateQueue.Enqueue(startState);
@@ -17,23 +17,25 @@ public class Pathfinder
 			{
 				finalState = currentState;
 				Console.WriteLine("Found final state: ");
-				finalState.PrintCurrentState();
+				finalState.PrintState();
 				break;
 			}
 			
 			foreach (var neighbour in currentState.GetNeighbour())
 			{
-				neighbour.PrintCurrentState();
-				if (currentState.PreviousState == neighbour)
-				{
-					continue;
-				}
 				
-				// if (visitedStates.Contains(neighbour))
+				// if (currentState.PreviousState.Equals(neighbour)) // can one do this comparison?
 				// {
 				// 	continue;
 				// }
 				
+				if (visitedStates.Contains(neighbour))
+				{
+					continue;
+				}
+				
+				neighbour.PrintState();
+
 				visitedStates.Add(neighbour);
 				stateQueue.Enqueue(neighbour);
 			
