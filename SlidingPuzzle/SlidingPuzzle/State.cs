@@ -136,34 +136,34 @@ public class State //Node!
 	{
 		//get cardinal directions in relation to empty slot (=-1)
 		var emptySlotPosition = GetIndexOfCell(-1);
-		var slotAboveIndex = new Vector2(emptySlotPosition.X, emptySlotPosition.Y + 1);
-		var slotBelowIndex = new Vector2(emptySlotPosition.X, emptySlotPosition.Y -1);
-		var slotRightIndex = new Vector2(emptySlotPosition.X+1, emptySlotPosition.Y);
-		var slotLeftIndex = new Vector2(emptySlotPosition.X-1, emptySlotPosition.Y);;
+		var slotAbove = new Vector2(emptySlotPosition.X-1, emptySlotPosition.Y);
+		var slotBelow = new Vector2(emptySlotPosition.X+1, emptySlotPosition.Y);
+		var slotRight = new Vector2(emptySlotPosition.X, emptySlotPosition.Y+1);
+		var slotLeft = new Vector2(emptySlotPosition.X, emptySlotPosition.Y-1);
 		
 		
 		
  
-		if (LegalBoardPosition(slotAboveIndex)) // inside board
+		if (LegalBoardPosition(slotAbove)) // inside board
 		{
 			
-			var newState = new State //TODO: in each statement below.
+			var newState = new State 
 			{
 				grid = grid,
 				gridWidth = gridWidth,
 				PreviousState = this,
 			};
 			
-				SwapElementsInState(newState, slotAboveIndex, emptySlotPosition);
+				SwapElementsInState( slotAbove, emptySlotPosition);
 				
 				yield return newState;
 			
 	
 		}
 	
-		if (LegalBoardPosition(slotBelowIndex)) // inside board
+		if (LegalBoardPosition(slotBelow))
 		{
-			var newState = new State //TODO: in each statement below.
+			var newState = new State 
 			{
 				grid = grid,
 				gridWidth = gridWidth,
@@ -171,16 +171,16 @@ public class State //Node!
 			};
 	
  
-				SwapElementsInState(newState, slotBelowIndex, emptySlotPosition);
+				SwapElementsInState( slotBelow, emptySlotPosition);
 	
 				yield return newState;
 			
 	
 		}
 	
-		if (LegalBoardPosition(slotLeftIndex)) // inside board
+		if (LegalBoardPosition(slotLeft)) 
 		{
-			var newState = new State //TODO: in each statement below.
+			var newState = new State 
 			{
 				grid = grid,
 				gridWidth = gridWidth,
@@ -188,33 +188,33 @@ public class State //Node!
 			};
 	
 	
-				SwapElementsInState(newState, slotLeftIndex, emptySlotPosition);
+				SwapElementsInState( slotLeft, emptySlotPosition);
 	
 				yield return newState;
 			
 		}
 	
-		if (LegalBoardPosition(slotRightIndex)) // inside board
+		if (LegalBoardPosition(slotRight)) 
 		{
-			var newState = new State //TODO: in each statement below.
+			var newState = new State 
 			{
 				grid = grid,
 				gridWidth = gridWidth,
 				PreviousState = this
 			};
 	
-				SwapElementsInState(newState, slotRightIndex, emptySlotPosition);
+				SwapElementsInState( slotRight, emptySlotPosition);
 	
 				yield return newState;
 			
 		}
 	}
 
-	private void SwapElementsInState(State newState, Vector2 checkDir, Vector2 originalEmptyPos)
+	private void SwapElementsInState( Vector2 slotPosition, Vector2 EmptyPos)
 	{
-		var temp = newState.grid[(int)checkDir.X, (int)checkDir.Y];
-		newState.grid[(int) checkDir.X, (int) checkDir.Y] = newState.grid[(int) originalEmptyPos.X, (int) originalEmptyPos.Y];
-		newState.grid[(int) originalEmptyPos.X, (int) originalEmptyPos.Y] = temp;
+		var temp = this.grid[(int)slotPosition.X, (int)slotPosition.Y];
+		this.grid[(int) slotPosition.X, (int) slotPosition.Y] = this.grid[(int) EmptyPos.X, (int) EmptyPos.Y];
+		this.grid[(int) EmptyPos.X, (int) EmptyPos.Y] = temp;
 
 
 	}

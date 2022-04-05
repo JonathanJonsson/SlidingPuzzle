@@ -24,10 +24,15 @@ public class Pathfinder
 			foreach (var neighbour in currentState.GetNeighbour())
 			{
 				neighbour.PrintCurrentState();
-				if (visitedStates.Contains(neighbour))
+				if (currentState.PreviousState == neighbour)
 				{
 					continue;
 				}
+				
+				// if (visitedStates.Contains(neighbour))
+				// {
+				// 	continue;
+				// }
 				
 				visitedStates.Add(neighbour);
 				stateQueue.Enqueue(neighbour);
